@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get "projects/index"
+      get "projects/show"
+      get "projects/create"
+      get "projects/update"
+      get "projects/destroy"
       get "users/index"
       get "users/show"
       get "users/create"
