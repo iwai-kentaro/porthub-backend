@@ -1,16 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      get "projects/index"
-      get "projects/show"
-      get "projects/create"
-      get "projects/update"
-      get "projects/destroy"
-      get "users/index"
-      get "users/show"
-      get "users/create"
-      get "users/update"
-      get "users/destroy"
+      resources :projects, only: [:index, :show, :create, :update, :destroy]
+      resources :users, only: [:index, :show, :create, :update, :destroy]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
