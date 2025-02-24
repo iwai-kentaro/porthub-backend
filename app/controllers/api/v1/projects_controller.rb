@@ -1,4 +1,6 @@
 class Api::V1::ProjectsController < ApplicationController
+  include Rails.application.routes.url_helpers
+
   def index
     @projects = Project.all
     render json: @projects
@@ -11,8 +13,12 @@ class Api::V1::ProjectsController < ApplicationController
 
   def create
     @project = Project.new(project_params)
+    if params[:project][:image].present?
+      @project.image.attach(params[:project][:image])
+    end
+
     if @project.save
-      render json: @project.as_json, status: :created # 201
+      render json: project_response(@project), status: :created # 201
     else
       render json: @project.errors, status: :unprocessable_entity # 422
     end
@@ -21,7 +27,7 @@ class Api::V1::ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
     if @project.update(project_params)
-      render json: @project.as_json, status: :ok # 200
+      render json: project_response(@project), status: :ok # 200
     else
       render json: @project.errors, status: :unprocessable_entity # 422
     end
@@ -30,7 +36,7 @@ class Api::V1::ProjectsController < ApplicationController
   def destroy
     @project = Project.find(params[:id])
     if @project.destroy
-      render json: @project.as_json, status: :ok # 200
+      render json: project_response(@project), status: :ok # 200
     else
       render json: @project.errors, status: :unprocessable_entity # 422
     end
@@ -39,6 +45,15 @@ class Api::V1::ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:title, :description, :user_id, :tag, :image, :portfolio_url)
+    params.require(:project).permit(:title, :description, :user_id, :image, :portfolio_url, tag: [])
+  end
+
+  def project_response(project)
+    # 取り込みたい属性を明示的に指定
+    project.as_json(only: [:id, :title, :description, :portfolio_url, :user_id])
+      .merge({
+        tag: project.tag,
+        image_url: project.image.attached? ? url_for(project.image) : nil
+      })
   end
 end
