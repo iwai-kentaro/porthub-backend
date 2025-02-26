@@ -3,12 +3,12 @@ class Api::V1::ProjectsController < ApplicationController
 
   def index
     @projects = Project.all
-    render json: @projects
+    render json: @projects.map { |project| project_response(project) }
   end
 
   def show
     @project = Project.find(params[:id])
-    render json: @project
+    render json: project_response(@project)
   end
 
   def create
@@ -49,11 +49,11 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   def project_response(project)
-    # 取り込みたい属性を明示的に指定
+
     project.as_json(only: [:id, :title, :description, :portfolio_url, :user_id])
-      .merge({
-        tag: project.tag,
-        image_url: project.image.attached? ? url_for(project.image) : nil
-      })
+    .merge({
+      tag: project.tag_array,
+      image_url: project.image.attached? ? url_for(project.image) : nil
+    })
   end
 end
