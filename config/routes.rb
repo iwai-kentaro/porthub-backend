@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      resources :projects, only: [:index, :show, :create, :update, :destroy]
+      resources :users, only: [:index, :show, :create, :update, :destroy]
+
+      post "auth/login", to: "auth#login"
+      delete "auth/logout", to: "auth#logout"
+      get "auth/me", to: "auth#me"
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
