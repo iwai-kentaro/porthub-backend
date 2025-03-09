@@ -33,3 +33,6 @@ production:
   password: <%= ENV['MYSQL_PASSWORD'] %> 
   host: <%= ENV['MYSQL_HOST'] %> 
   pool: 15
+
+cable:
+adapter: mysql2
